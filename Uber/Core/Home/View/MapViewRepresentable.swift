@@ -12,6 +12,7 @@ struct MapViewRepresentable: UIViewRepresentable{
     
     let mapView = MKMapView()
     private let locationManager = LocationManager()
+    @EnvironmentObject var viewModel: LocationSearchViewModel
 
     func makeUIView(context: Context) -> some UIView {
         mapView.delegate = context.coordinator
@@ -22,7 +23,9 @@ struct MapViewRepresentable: UIViewRepresentable{
     }
     
     func updateUIView(_ uiView: UIViewType, context: Context) {
-        
+        if let selectedLocation = viewModel.selectedLocation{
+            print("Selected location from search is \(selectedLocation)")
+        }
     }
     
     func makeCoordinator() -> MapViewCoordinator {
@@ -55,3 +58,8 @@ extension MapViewRepresentable {
     
 }
 
+#Preview{
+    MapViewRepresentable()
+        .ignoresSafeArea()
+        .environmentObject(LocationSearchViewModel())
+}
