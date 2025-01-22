@@ -11,7 +11,7 @@ struct LocationSearchView: View {
     
     @State private var currentLocationTextFieldText: String = ""
     @EnvironmentObject private var viewModel: LocationSearchViewModel
-    @Binding var showSeachView: Bool
+    @Binding var mapState: MapViewState
     
     var body: some View {
         VStack{
@@ -37,11 +37,13 @@ struct LocationSearchView: View {
                         .padding(.leading, 10)
                         .frame(height: 32)
                         .background(Color(.systemGroupedBackground))
+                        .tint(.black)
                     
                     TextField("Where to?", text: $viewModel.searchQuery)
                         .padding(.leading, 10)
                         .frame(height: 32)
                         .background(Color(.systemGray4))
+                        .tint(.black)
                 }
                 .padding(.leading, 10)
             }
@@ -56,9 +58,9 @@ struct LocationSearchView: View {
                     LocationSearchResultCell(title: result.title, subtitle: result.subtitle)
                         .onTapGesture {
                             withAnimation{
-                                showSeachView.toggle()
+                                mapState = .locationSelected
                             }
-                            viewModel.updateLocations(result.title)
+                            viewModel.updateLocations(result)
                         }
                 }
             }
@@ -70,7 +72,7 @@ struct LocationSearchView: View {
 
 struct LocationSearchView_Preview: PreviewProvider{
     static var previews: some View{
-        LocationSearchView(showSeachView: .constant(true))
+        LocationSearchView(mapState: .constant(.searchingForLocation))
             .previewLayout(.sizeThatFits)
             .padding()
             .environmentObject(LocationSearchViewModel())

@@ -9,23 +9,23 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @State private var showSearchView: Bool = false
+    @State private var mapState: MapViewState = .noInput
     
     var body: some View {
         ZStack(alignment: .top) {
             
             //MAP
-            MapViewRepresentable()
+            MapViewRepresentable(mapState: $mapState)
                 .ignoresSafeArea()
             
             //LOCATION SEARCH
-            if showSearchView{
-                LocationSearchView(showSeachView: $showSearchView)
-            }else{
+            if mapState == .searchingForLocation{
+                LocationSearchView(mapState: $mapState)
+            }else if mapState == .noInput{
                 locationSeachView
             }
             
-            MapviewActionButtonView(showSearchView: $showSearchView)
+            MapviewActionButtonView(mapState: $mapState)
                 .padding(.leading, 20)
             
         }
@@ -39,7 +39,7 @@ extension HomeView{
             .padding(.top, 72)
             .onTapGesture {
                 withAnimation {
-                    showSearchView.toggle()
+                    mapState = .searchingForLocation
                 }
             }
     }
@@ -48,4 +48,5 @@ extension HomeView{
 
 #Preview {
     HomeView()
+        .environmentObject(LocationSearchViewModel())
 }
