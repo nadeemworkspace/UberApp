@@ -58,9 +58,9 @@ struct LocationSearchView: View {
                     LocationSearchResultCell(title: result.title, subtitle: result.subtitle)
                         .onTapGesture {
                             withAnimation{
+                                viewModel.updateLocations(result)
                                 mapState = .locationSelected
                             }
-                            viewModel.updateLocations(result)
                         }
                 }
             }
