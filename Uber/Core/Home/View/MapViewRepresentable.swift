@@ -11,7 +11,7 @@ import MapKit
 struct MapViewRepresentable: UIViewRepresentable{
     
     let mapView = MKMapView()
-    private let locationManager = LocationManager()
+    private let locationManager = LocationManager.shared
     @EnvironmentObject var viewModel: LocationSearchViewModel
     @Binding var mapState: MapViewState
 
@@ -32,7 +32,6 @@ struct MapViewRepresentable: UIViewRepresentable{
         case .searchingForLocation:
             break
         case .locationSelected:
-//            context.coordinator.clearAndResetMapView(recenter: false)
             if let destinationCoordinate = viewModel.selectedLocationCoordinate{
                 context.coordinator.addAndSelectAnnotations(withCoordinate: destinationCoordinate)
                 context.coordinator.configurePolyLine(destinationCoordinate: destinationCoordinate)
@@ -88,7 +87,6 @@ extension MapViewRepresentable {
             annotation.coordinate = coordinate
             parent.mapView.addAnnotation(annotation)
             parent.mapView.selectAnnotation(annotation, animated: true)
-            parent.mapView.showAnnotations(parent.mapView.annotations, animated: true)
         }
         
         //Polyline 📍---------📍
@@ -96,6 +94,9 @@ extension MapViewRepresentable {
             guard let userLocationCoordinate else { return }
             self.getDestinationRoute(userLocation: userLocationCoordinate, destination: destinationCoordinate) { route in
                 self.parent.mapView.addOverlay(route.polyline)
+                //Pan mapview when showing RideRequestView()
+                let rect = self.parent.mapView.mapRectThatFits(route.polyline.boundingMapRect, edgePadding: UIEdgeInsets(top: 64, left: 32, bottom: 520, right: 32))
+                self.parent.mapView.setRegion(MKCoordinateRegion(rect), animated: true)
             }
         }
         
