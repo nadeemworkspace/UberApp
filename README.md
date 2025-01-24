@@ -7,3 +7,4 @@ This is a simple Uber clone app for iOS, created using SwiftUI. The app focuses 
 - Display a map view using MapKit
 - User's current location
 - Custom annotations for pick-up and drop-off locations
+- Calculate ride price using custom logic based on the distances
